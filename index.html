@@ -314,6 +314,11 @@ function parseDate(v){
   if (m) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
   m = s.match(/^(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{4})/);           // dd/mm/yyyy
   if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  m = s.match(/^(\d{1,2})[\s\-\/\.]+([A-Za-z]{3})[A-Za-z]*[\s\-\/\.,]+(\d{4})/);   // 01-Nov-2026
+  if (m) {
+    const mo = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(m[2].toLowerCase()) + 1;
+    if (mo) return `${m[3]}-${String(mo).padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+  }
   return '';
 }
 const showDate = d => d ? d.split('-').reverse().join('/') : '';
