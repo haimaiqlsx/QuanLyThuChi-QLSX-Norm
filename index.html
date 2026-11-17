@@ -221,11 +221,7 @@ footer{text-align:center;color:var(--ink-3);font-size:12px;padding:10px 0 30px}
   </div>
 
   <!-- charts row 2 -->
-  <div class="grid2b">
-    <div class="card panel">
-      <div class="panel-h"><h2>Top đóng góp theo người</h2><span class="hint">Tự nhận diện từ nội dung “… đóng góp / đóng quỹ / góp quỹ / ủng hộ”</span></div>
-      <div class="chart-box sm"><canvas id="c-people"></canvas></div>
-    </div>
+  <div style="margin-bottom:14px">
     <div class="card panel">
       <div class="panel-h"><h2>Thu theo nguồn (danh mục)</h2></div>
       <div class="chart-box sm"><canvas id="c-thucat"></canvas></div>
@@ -490,7 +486,6 @@ function render(){
 
   drawMonthly(rows, per);
   drawCat(chi);
-  drawPeople(thu);
   drawThuCat(thu);
   drawTable(per);
 }
