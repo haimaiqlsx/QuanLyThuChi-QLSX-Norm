@@ -387,17 +387,23 @@ function dataUrl(){
   if (CONFIG.CSV_URL) return CONFIG.CSV_URL + (CONFIG.CSV_URL.includes('?')?'&':'?') + bust;
   const m = String(CONFIG.SHEET_URL).match(/\/d\/([a-zA-Z0-9_-]{20,})/) || String(CONFIG.SHEET_URL).match(/^([a-zA-Z0-9_-]{20,})$/);
   if (!m) return null;
-  return `https://docs.google.com/spreadsheets/d/${m[1]}/gviz/tq?tqx=out:csv&headers=1&gid=${encodeURIComponent(CONFIG.SHEET_GID)}&${bust}`;
+  return `https://docs.google.com/spreadsheets/d/${m[1]}/gviz/tq?tqx=out:csv&headers=1&gid=${encodeURIComponent(CONFIG.SHEET_GID)}&range=A:G&${bust}`;
 }
 function loadData(manual, silent){
   const url = dataUrl();
   if (!url){ $('updated').textContent='Chưa cấu hình link Google Sheet (CONFIG.SHEET_URL)'; toast('Chưa có link Google Sheet trong CONFIG'); return; }
   if (!silent) $('loading').style.display='flex';
   Papa.parse(url, {
-    download:true, header:true, skipEmptyLines:true,
-    transformHeader: h => h.trim(),
+    download:true, header:false, skipEmptyLines:true,
     complete: res => {
-      RAW = res.data.map((r,i) => ({
+      // Tự ghép tiêu đề, bỏ qua các cột trống (tránh lỗi khi sheet có thêm cột rỗng)
+      const [hdr = [], ...body] = res.data;
+      const rows = body.map(a => {
+        const o = {};
+        hdr.forEach((h, i) => { const k = String(h||'').trim(); if (k) o[k] = a[i]; });
+        return o;
+      });
+      RAW = rows.map((r,i) => ({
         id:i,
         team: String(pick(r,'team')).trim().toUpperCase(),
         date: parseDate(pick(r,'date')),
